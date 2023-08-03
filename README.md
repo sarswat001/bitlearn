@@ -9,3 +9,10 @@ Key features for this app are -
   6. Both Users & Admins will have their own Dashboards.
 
 # FrontEnd for this project is still under development.
+
+
+![image](https://github.com/sarswat001/bitlearn/assets/50901866/5903b114-5cdf-48a3-b648-f9b357937203)
+
+![image](https://github.com/sarswat001/bitlearn/assets/50901866/45ddb219-3b4a-424e-993f-404dce37a339)
+
+![image](https://github.com/sarswat001/bitlearn/assets/50901866/67c4c27c-63c0-4eb0-8168-2e157d5f2978)
