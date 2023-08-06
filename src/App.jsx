@@ -11,7 +11,7 @@ import Navbar from './components/Navbar';
 import Signup from './components/Signup';
 
 function App() {
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(0);
   
   const darkTheme = createTheme({
     palette: {
@@ -52,7 +52,9 @@ function App() {
   }
 
   const setLoader = (load) => {
+    console.log(progress);
     setProgress(load);
+    console.log(progress);
   }
 
   return (

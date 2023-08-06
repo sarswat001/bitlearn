@@ -1,19 +1,15 @@
 import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login(props) {
     const navigate = useNavigate();
-
+    const location = useLocation();
     React.useEffect(() => {
         props.setLoader(10);
         props.setLoader(70);
         props.setLoader(100);
-    }, []);
-
-    const updateLoader = (load) => {
-        props.setLoader(load);
-    }
+    }, [location.pathname]);
     return (
         <Container maxWidth="xl" sx={{
             height:'100vh',
@@ -24,7 +20,6 @@ export default function Login(props) {
                 justifyContent: "center",
                 alignItems: "center",
         }}}>
-            {updateLoader(10)}
             <Typography
                 variant="h6"
                 noWrap
