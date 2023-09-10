@@ -26,6 +26,7 @@ let COURSES = [];
         description: String,
         price: Number,
         imageLink: String,
+        videoLink: String,
         published: Boolean,
         adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
     });
@@ -39,44 +40,44 @@ let COURSES = [];
     );
 
     const generateJwt = (user, type) => {
-    const payload = { username: user.username };
-    if (type === "user") {
-        return jwt.sign(payload, process.env.USER_SECRET_KEY, { expiresIn: "1h" });
-    } else {
-        return jwt.sign(payload, process.env.ADMIN_SECRET_KEY, { expiresIn: "1h" });
-    }
+        const payload = { username: user.username };
+        if (type === "user") {
+            return jwt.sign(payload, process.env.USER_SECRET_KEY, { expiresIn: "5h" });
+        } else {
+            return jwt.sign(payload, process.env.ADMIN_SECRET_KEY, { expiresIn: "5h" });
+        }
     };
 
     const authenticateJwtAdmin = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(" ")[1];
-        jwt.verify(token, process.env.ADMIN_SECRET_KEY, (err, user) => {
-        if (err) {
-            return res.sendStatus(403);
+        const authHeader = req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.split(" ")[1];
+            jwt.verify(token, process.env.ADMIN_SECRET_KEY, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            req.user = user;
+            console.log(user);
+            next();
+            });
+        } else {
+            res.sendStatus(401);
         }
-        req.user = user;
-        console.log(user);
-        next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
     };
     const authenticateJwtUser = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(" ")[1];
-        jwt.verify(token, process.env.USER_SECRET_KEY, (err, user) => {
-        if (err) {
-            return res.sendStatus(403);
+        const authHeader = req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.split(" ")[1];
+            jwt.verify(token, process.env.USER_SECRET_KEY, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            req.user = user;
+            next();
+            });
+        } else {
+            res.sendStatus(401);
         }
-        req.user = user;
-        next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
     };
 
     // Admin routes
@@ -120,12 +121,10 @@ let COURSES = [];
         course.adminId = validAdmin._id;
         course = new Course(course);
         await course.save();
-        res
-            .status(200)
-            .json({
+        res.status(200).json({
             message: "Course created successfully",
             courseId: course.courseId,
-            });
+        });
     });
 
     app.put("/admin/courses/:courseId", authenticateJwtAdmin, async (req, res) => {
@@ -142,7 +141,9 @@ let COURSES = [];
     });
 
     app.get("/admin/courses", authenticateJwtAdmin, async (req, res) => {
-        res.status(200).json(await Course.find({}));
+        const { username } = req.user;
+        let validAdmin = await Admin.findOne({ username });
+        res.status(200).json(await Course.find({adminId:validAdmin._id}));
     });
 
     // User routes

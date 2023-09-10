@@ -17,7 +17,8 @@ export default function Signup(props) {
 
     const handleSignUp = async () => {
         try {
-            await fetch("http://localhost:3000/users/signup", {
+            console.log("signup")
+            const res = await fetch(`http://localhost:3000/${props.user}/signup`, {
                 method: "POST",
                 body: JSON.stringify({
                     username,
@@ -26,12 +27,15 @@ export default function Signup(props) {
                 headers: {
                     "Content-type": "application/json",
                 },
-            });
-
-            // Handle successful sign up here, e.g., navigate to a different page.
-            navigate("/");
+            })
+            const data = await res.json();
+            console.log(data);
+            localStorage.setItem("token",data.token);
+            props.updateIsLogin(true);
+            if(props.user === 'users') navigate("/");
+            else if(props.user === 'admin') navigate("/admin/dashboard");
         } catch (error) {
-            // Handle error
+            console.error();
         }
     };
 

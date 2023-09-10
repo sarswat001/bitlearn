@@ -1,8 +1,11 @@
 import { Button, Card, Container, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login(props) {
+    const [username,setUsername] = useState('');
+    const [password,setPassword] = useState('');
+
     const navigate = useNavigate();
     const location = useLocation();
     React.useEffect(() => {
@@ -10,6 +13,28 @@ export default function Login(props) {
         props.setLoader(70);
         props.setLoader(100);
     }, [location.pathname]);
+
+    const handleLogin = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/${props.user}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                    username,
+                    password
+                },
+            })
+            const data = await res.json();
+            console.log(data);
+            localStorage.setItem("token",data.token);
+            props.updateIsLogin(true);
+            if(props.user === 'users') navigate("/");
+            else if(props.user === 'admin') navigate("/admin/dashboard");
+        } catch (error) {
+            console.error();
+        }
+    };
+
     return (
         <Container maxWidth="xl" sx={{
             height:'100vh',
@@ -41,9 +66,37 @@ export default function Login(props) {
                 borderRadius:2,
                 border:'1px solid'
             }}>
-                <TextField id="outlined-basic" fullWidth  label="Email" variant="outlined" sx={{m:1}}/>
-                <TextField id="outlined-basic" fullWidth label="Password" variant="outlined" sx={{m:1}}/>
-                <Button size="large" color="secondary" fullWidth variant="contained" sx={{m:1,mt:4}}>Log In</Button>
+                <TextField
+                    id="username"
+                    fullWidth
+                    label="Email"
+                    variant="outlined"
+                    sx={{ m: 1 }}
+                    onChange={(event) => {
+                        setUsername(event.target.value);
+                    }}
+                />
+                <TextField
+                    id="password"
+                    fullWidth
+                    label="Password"
+                    variant="outlined"
+                    sx={{ m: 1 }}
+                    type="password"
+                    onChange={(event) => {
+                        setPassword(event.target.value);
+                    }}
+                />
+                <Button
+                    size="large"
+                    color="secondary"
+                    fullWidth
+                    variant="contained"
+                    sx={{m:1,mt:4}}
+                    onClick={handleLogin}
+                >
+                    Log In
+                </Button>
             </Card>
             <Typography
                 variant="h6"

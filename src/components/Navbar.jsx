@@ -12,15 +12,39 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const pages = ["Browse", "Courses", "Community"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function Navbar() {
+function Navbar(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [buttonsDisplay,setButtonsDisplay] = React.useState('flex');
+  const [userDisplay,setUserDisplay] = React.useState('none');
 
+  useEffect(()=>{
+    if(localStorage.token){
+      setButtonsDisplay('none');
+      setUserDisplay('flex');
+    }else{
+      setButtonsDisplay('flex');
+      setUserDisplay('none');
+    }
+  },[localStorage.token]);
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    props.updateIsLogin(false);
+    navigate('/');
+  };
+
+  const handleUserMenu = (menu) => () => {
+    if (menu === 'Logout') handleLogout();
+    setAnchorElUser(null);
+  };
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -39,7 +63,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <AppBar position="fixed" open={Boolean(false)}>
+    <AppBar position="sticky" open={Boolean(false)} sx={{zIndex:1500}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <SchoolIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1,cursor:'pointer' }} onClick={()=>{navigate('/')}}/>
@@ -162,44 +186,46 @@ function Navbar() {
               </Button>
             ))}
           </Box>
-          <Button
-            color="secondary"
-            sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}
-            onClick={()=>{
-              navigate('/admin');
-            }}
-          >
-            Join as Tutor
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{
-              display: { xs: "none", md: "flex" },
-              mr: 2,
-              border: "2px solid",
-              fontWeight: "500",
-            }}
-            onClick={()=>{
-              navigate('/login');
-            }}
-          >
-            Log In
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-            onClick={()=>{
-              navigate('/signup');
-            }}
-          >
-            Sign Up
-          </Button>
-          <Box sx={{ display: { xs: "flex", md: "none" }, flexGrow: 0 }}>
+          <Box sx={{ display: { xs: "none", md: buttonsDisplay }, flexGrow: 0 }}>
+            <Button
+              color="secondary"
+              sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}
+              onClick={()=>{
+                navigate('/admin');
+              }}
+            >
+              Join as Tutor
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{
+                display: { xs: "none", md: "flex" },
+                mr: 2,
+                border: "2px solid",
+                fontWeight: "500",
+              }}
+              onClick={()=>{
+                navigate('/login');
+              }}
+            >
+              Log In
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+              onClick={()=>{
+                navigate('/signup');
+              }}
+            >
+              Sign Up
+            </Button>
+          </Box>
+          <Box sx={{ display: { xs: "none", md: userDisplay }, flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="/broken-image.jpg" />
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0}}>
+                <Avatar sx={{ p: 0, color:'#ce93d8'}}/>
               </IconButton>
             </Tooltip>
             <Menu
@@ -219,7 +245,7 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
