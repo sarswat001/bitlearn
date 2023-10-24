@@ -1,22 +1,34 @@
 import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isLoginState, progressState, userState } from "../store/atoms/Course";
 
 export default function Login(props) {
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
+    const setIsLogin = useSetRecoilState(isLoginState);
+    const setProgress = useSetRecoilState(progressState);
+    const user = useRecoilValue(userState);
 
     const navigate = useNavigate();
     const location = useLocation();
     React.useEffect(() => {
-        props.setLoader(10);
-        props.setLoader(70);
-        props.setLoader(100);
+        const updateProgress = () => {
+            setProgress(70);
+            setTimeout(() => {
+                setProgress(90);
+            }, 1000);
+            setTimeout(() => {
+                setProgress(100);
+            }, 2000);
+        };
+        updateProgress();
     }, [location.pathname]);
 
     const handleLogin = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/${props.user}/login`, {
+            const res = await fetch(`http://localhost:3000/${user}/login`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json",
@@ -27,9 +39,10 @@ export default function Login(props) {
             const data = await res.json();
             console.log(data);
             localStorage.setItem("token",data.token);
-            props.updateIsLogin(true);
-            if(props.user === 'users') navigate("/");
-            else if(props.user === 'admin') navigate("/admin/dashboard");
+            //props.updateIsLogin(true);
+            setIsLogin(true);
+            if(user === 'users') navigate("/");
+            else if(user === 'admin') navigate("/admin/dashboard");
         } catch (error) {
             console.error();
         }

@@ -2,24 +2,39 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Box, Button, Card, Container, Divider, Typography } from '@mui/material';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { progressState, userState } from '../store/atoms/Course';
 
 export default function Admin(props) {
     const location = useLocation();
     const navigate = useNavigate();
+    const setProgress = useSetRecoilState(progressState);
+    const setUser = useSetRecoilState(userState);
+
     React.useEffect(() => {
-        props.setLoader(10);
-        props.setLoader(70);
-        props.setLoader(100);
+        const updateProgress = () => {
+            setProgress(10);
+            setTimeout(() => {
+                setProgress(70);
+            }, 1000);
+            setTimeout(() => {
+                setProgress(90);
+            }, 1000);
+            setTimeout(() => {
+                setProgress(100);
+            }, 2000);
+        };
+        updateProgress();
     }, [location.pathname]);
 
     return (
         <>
-            <Container maxWidth='xl' sx={{height: '91vh',  display: 'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+            <Container maxWidth='xl' sx={{ display: 'flex',height: { xs: 'none', md: '91vh'},flexDirection: { xs: 'column', md: 'row' },flexWrap:1,alignItems:'center',justifyContent:'spacing-between'}}>
                 <Box
-                    m={10}
-                    pr={20}
-                    //pt={10}
-                    pb={5}
+                    m={8}
+                    // pr={20}
+                    // //pt={10}
+                    // pb={5}
                     sx={{
                         display:{xs:'flex',md:'flex',flexDirection:'column',flexGrow:1},
                         //backgroundColor:'red',
@@ -28,7 +43,6 @@ export default function Admin(props) {
                 >
                     <Typography
                         variant="h6"
-                        noWrap
                         component="a"
                         sx={{
                             display: { xs: "flex", md: "flex" },
@@ -44,7 +58,6 @@ export default function Admin(props) {
                     </Typography>
                     <Typography
                         variant="h3"
-                        noWrap
                         component="a"
                         //p={25}
                         sx={{
@@ -84,7 +97,7 @@ export default function Admin(props) {
                             fontWeight: "500",
                         }}
                         onClick={()=>{
-                            props.updateUser('admin');
+                            setUser('admin');
                             navigate('/signup');
                         }}
                         >
@@ -93,28 +106,27 @@ export default function Admin(props) {
                 </Box>
                 <Box
                     //m={10}
-                    mt={10}
-                    mr={10}
-                    mb={8}
+                    // mt={10}
+                    // mr={10}
+                    // mb={8}
 
-                    sx={{
-                        display:{xs:'flex',md:'flex',flexDirection:'row',flexGrow:1}
-                }}>
+                    ssx={{
+                        display: { xs: "flex", md: "flex", flexDirection: "column" },
+                    }}>
                     <img
-                        width="110%"
+                        width="100%"
                         src="../../public/mainadmin.png"
                         alt=""
                         loading="lazy"
                     />
                 </Box>
             </Container>
-            <Container maxWidth='xl' sx={{ height: '70vh', display: 'flex',flexDirection:'row',backgroundColor:'#E8BFEC',color:'black'}}>
+            <Container maxWidth='xl' sx={{  display: 'flex',flexDirection:{ xs: 'column', md: 'row' },flexWrap:1,backgroundColor:'#E8BFEC',color:'black'}}>
                 <Box
-                    m={10}
+                    //m={10}
                     sx={{
-                        display:{xs:'flex',md:'flex',flexDirection:'column',flexGrow:8},
-                        //backgroundColor:'red',
-                        //mt:'200px'
+                        display:{xs:'flex',md:'flex',flexDirection:'column',flexGrow:0},
+                        margin: {xs: 2,md: 5},
                 }}>
                     <Typography
                         variant="h4"
@@ -160,13 +172,17 @@ export default function Admin(props) {
                         LEARN MORE <ArrowRightAltIcon/>
                     </Typography>
                 </Box>
-                <Divider orientation="vertical" variant="middle" flexItem sx={{mt:10,mb:10,border:'2px solid',borderRadius:'5px',color:'#121212'}}/>
+                <Divider orientation="vertical" variant="middle" flexItem sx={{display:{ xs: 'none', md: 'flex' },mt:10,mb:10,border:'2px solid',borderRadius:'5px',color:'#121212'}}/>
+                <Divider orientation="horizontal" variant="middle" flexItem sx={{display:{ xs: 'flex', md: 'none' },mt:5,mb:5,border:'2px solid',borderRadius:'5px',color:'#121212'}}/>
                 <Box
-                    m={10}
                     sx={{
-                        display:{xs:'flex',md:'flex',flexDirection:'row',flexGrow:1},
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        margin: {xs: 1,md: 5},
+                        flexGrow: 0,
+                        flexWrap: 1,
                 }}>
-                    <Card variant="outlined" sx={{width:'330px' ,display:'flex',flexDirection:'column',m:2,backgroundColor:'#EEDCF1',color:'black',borderRadius:'10px'}}>
+                    <Card variant="outlined" sx={{display:'flex',flexDirection:'column',m:2,backgroundColor:'#EEDCF1',color:'black',borderRadius:'10px'}}>
                         <Divider orientation="horizontal" variant="fullWidth" flexItem sx={{border:'3px solid',borderRadius:'5px',color:'#910D9E'}}/>
                         <img
                             width="20%"
@@ -178,7 +194,7 @@ export default function Admin(props) {
                         />
                         <Typography
                         variant="h7"
-                        noWrap
+                        
                         component="a"
                         sx={{
                             display:'flex',
@@ -210,7 +226,7 @@ export default function Admin(props) {
                         on dashboard before publishing the course.
                     </Typography>
                     </Card>
-                    <Card variant="outlined" sx={{width:'330px' ,display:'flex',flexDirection:'column',m:2,backgroundColor:'#EEDCF1',color:'black',borderRadius:'10px'}}>
+                    <Card variant="outlined" sx={{display:'flex',flexDirection:'column',m:2,backgroundColor:'#EEDCF1',color:'black',borderRadius:'10px'}}>
                         <Divider orientation="horizontal" variant="fullWidth" flexItem sx={{border:'3px solid',borderRadius:'5px',color:'#910D9E'}}/>
                         <img
                             width="20%"
@@ -222,7 +238,6 @@ export default function Admin(props) {
                         />
                         <Typography
                         variant="h7"
-                        noWrap
                         component="a"
                         sx={{
                             display:'flex',
@@ -257,7 +272,7 @@ export default function Admin(props) {
 
                 </Box>
             </Container>
-            <Container maxWidth='xl' sx={{ height: '10vh', display: 'flex',flexDirection:'row'}}>
+            <Container maxWidth='xl' sx={{ height: '10vh', display: 'flex',flexDirection:'row',flexWrap: 1}}>
 
             </Container>
         </>

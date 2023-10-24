@@ -2,13 +2,27 @@ import { Box, Container, Typography } from '@mui/material';
 
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { progressState } from '../store/atoms/Course';
 
 export default function Landing(props) {
     const location = useLocation();
+    const setProgress = useSetRecoilState(progressState);
+
     React.useEffect(() => {
-        props.setLoader(10);
-        props.setLoader(70);
-        props.setLoader(100);
+        const updateProgress = () => {
+            setProgress(10);
+            setTimeout(() => {
+                setProgress(70);
+            }, 1000);
+            setTimeout(() => {
+                setProgress(90);
+            }, 1000);
+            setTimeout(() => {
+                setProgress(100);
+            }, 2000);
+        };
+        updateProgress();
     }, [location.pathname]);
     
     return (
@@ -18,7 +32,6 @@ export default function Landing(props) {
                 }}>
                     <Typography
                         variant="h4"
-                        noWrap
                         component="a"
                         sx={{
                         mt: 9,

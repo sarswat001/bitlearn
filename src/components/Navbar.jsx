@@ -14,6 +14,8 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { isLoginState } from "../store/atoms/Course";
 
 const pages = ["Browse", "Courses", "Community"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -23,6 +25,8 @@ function Navbar(props) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [buttonsDisplay,setButtonsDisplay] = React.useState('flex');
   const [userDisplay,setUserDisplay] = React.useState('none');
+
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
   useEffect(()=>{
     if(localStorage.token){
@@ -37,7 +41,8 @@ function Navbar(props) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    props.updateIsLogin(false);
+    // props.updateIsLogin(false);
+    setIsLogin(false);
     navigate('/');
   };
 
@@ -65,7 +70,7 @@ function Navbar(props) {
   return (
     <AppBar position="sticky" open={Boolean(false)} sx={{zIndex:1500}}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{display:'flex', justifyContent:'flex-end'}}>
           <SchoolIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1,cursor:'pointer' }} onClick={()=>{navigate('/')}}/>
           <Typography
             variant="h5"
@@ -186,7 +191,7 @@ function Navbar(props) {
               </Button>
             ))}
           </Box>
-          <Box sx={{ display: { xs: "none", md: buttonsDisplay }, flexGrow: 0 }}>
+          <Box sx={{ display: { xs: "none", md: buttonsDisplay }, flexGrow: 0,marginRight: 0 }}>
             <Button
               color="secondary"
               sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}

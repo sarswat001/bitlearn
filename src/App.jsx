@@ -1,21 +1,17 @@
 import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { useState } from 'react';
 import { Outlet, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import LoadingBar from 'react-top-loading-bar';
 import './App.css';
 import Admin from './components/Admin';
 import AdminDashboard from './components/AdminDashboard';
 import Course from './components/Course';
 import Landing from './components/Landing';
+import Loader from './components/Loader';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Signup from './components/Signup';
 
 function App() {
-  const [progress, setProgress] = useState(0);
-  const [isLogin, setIsLogin] = useState(false);
-  const [user, setUser] = useState('users');
   
   const darkTheme = createTheme({
     palette: {
@@ -41,7 +37,7 @@ function App() {
   const DefaultContainer = (props) => {
     return(
       <>
-        <Navbar isLogin={props.isLogin} updateIsLogin={updateIsLogin}/>
+        <Navbar/>
         <Outlet />
       </>
     )
@@ -55,38 +51,21 @@ function App() {
     )
   }
 
-  const setLoader = (load) => {
-    //console.log(progress);
-    setProgress(load);
-    //console.log(progress);
-  }
-
-  const updateIsLogin = (flag)=>{
-    setIsLogin(flag);
-  }
-
-  const updateUser = (curr)=>{
-    setUser(curr);
-  }
-
   return (
     <>
       <ThemeProvider theme={darkTheme}>
         <Router>
-          <LoadingBar
-            color='#ce93d8'
-            progress={progress}
-          />
+          <Loader/>
           <Routes>
-            <Route element={<DefaultContainer isLogin={isLogin} updateIsLogin={updateIsLogin}/>}>
-              <Route exact path='/' element={<Landing setLoader={setLoader}/>}/>
-              <Route exact path='/admin' element={<Admin setLoader={setLoader} updateUser={updateUser}/>}/>
-              <Route exact path='/admin/dashboard/*' element={<AdminDashboard setLoader={setLoader}/>}/>
+            <Route element={<DefaultContainer/>}>
+              <Route exact path='/' element={<Landing/>}/>
+              <Route exact path='/admin' element={<Admin/>}/>
+              <Route exact path='/admin/dashboard/*' element={<AdminDashboard/>}/>
               <Route exact path='/courses/:courseId' element={<Course/>}/>
             </Route>
             <Route element={<WithoutNavbarContainer/>}>
-              <Route exact path='/login' element={<Login setLoader={setLoader} updateIsLogin={updateIsLogin} user={user}/>}/>
-              <Route exact path='/signup' element={<Signup setLoader={setLoader} updateIsLogin={updateIsLogin} user={user}/>}/>
+              <Route exact path='/login' element={<Login/>}/>
+              <Route exact path='/signup' element={<Signup/>}/>
             </Route>
           </Routes>
         </Router>
