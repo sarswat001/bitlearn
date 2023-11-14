@@ -9,7 +9,7 @@ export default function Loader() {
     return (
         <>
             {progress < 100 && (
-                <LinearProgress color="secondary" variant="determinate" value={progress} />
+                <LinearProgress color="secondary" variant="determinate" value={progress}/>
             )}
         </>
     )

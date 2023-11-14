@@ -45,6 +45,7 @@ router.post("/courses", authenticateJwtAdmin, async (req, res) => {
     let validAdmin = await Admin.findOne({ username });
     let course = req.body;
     course.adminId = validAdmin._id;
+    course.publishedDate = 'Work In Progress';
     course.author = username.substring(0,username.indexOf('@'));
     console.log(course);
     course = new Course(course);

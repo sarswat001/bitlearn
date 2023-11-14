@@ -13,9 +13,11 @@ const courseSchema = new mongoose.Schema({
     title: String,
     description: String,
     price: Number,
+    category: String,
     imageLink: String,
     videoLink: String,
     published: Boolean,
+    publishedDate: String,
     author: String,
     adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
 });

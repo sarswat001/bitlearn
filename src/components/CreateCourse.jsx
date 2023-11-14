@@ -1,5 +1,7 @@
-import { Button, Card, Container, TextField, Typography } from '@mui/material';
+import { Button, Card, Container, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { categoryState } from '../store/atoms/Course';
 import Course from './CourseCard';
 
 export default function CreateCourse() {
@@ -9,6 +11,9 @@ export default function CreateCourse() {
   const [imageLink, setImageLink] = useState();
   const [videoLink, setVideoLink] = useState();
   const [published, setPublished] = useState(false);
+
+  const [category,setCategory] = useRecoilState(categoryState);
+  const categories = ['Development','Business','Art','Music','Health'];
 
   async function handleFileChange(e) {
     console.log(e.target.files[0]);
@@ -45,6 +50,9 @@ export default function CreateCourse() {
   function handlePriceChange(e) {
     setPrice(e.target.value);
   }
+  function handleCategoryChange(e) {
+    setCategory(e.target.value);
+  }
 
   const handleCreateCourse = async () => {
     try {
@@ -54,6 +62,7 @@ export default function CreateCourse() {
             body: JSON.stringify({
                 title,
                 description,
+                category,
                 imageLink,
                 videoLink,
                 price,
@@ -68,8 +77,6 @@ export default function CreateCourse() {
         console.log(data);
     } catch (error) {
         console.error();
-    } finally{
-      set
     }
   };
 
@@ -92,10 +99,9 @@ export default function CreateCourse() {
               display:'flex',
               flexDirection:'column',
               justifyContent: 'space-between',
-              //alignItems:'center',
               border:'1px solid',
+              gap: 2,
               flexGrow:1,
-              minHeight:500
             }}
           >
             <Typography variant='h4' color={'#ce93d8'}>
@@ -103,6 +109,21 @@ export default function CreateCourse() {
             </Typography>
             <TextField onChange={handleTitleChange} fullWidth label="Title" variant="standard" />
             <TextField onChange={handleDescChange} fullWidth label="Description" multiline maxRows={4} variant="standard"/>
+            <FormControl required >
+              <InputLabel id="demo-simple-select-required-label">Category</InputLabel>
+              <Select
+                labelId="demo-simple-select-required-label"
+                id="demo-simple-select-required"
+                value={category}
+                label="Category *"
+                onChange={handleCategoryChange}
+              >
+                {categories.map((courseCategory, index) => (
+                  <MenuItem key={index} value={courseCategory}>{courseCategory}</MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>Required</FormHelperText>
+            </FormControl>
             <Typography variant='h7'>
               Upload Thumbnail:
               <input type="file" onChange={handleFileChange} style={{marginLeft:'15px'}}/>

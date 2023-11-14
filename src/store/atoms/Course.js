@@ -14,3 +14,8 @@ export const userState = atom({
     key: 'user',
     default: 'users'
 });
+
+export const categoryState = atom({
+    key: 'category',
+    default: ''
+});
